@@ -39,29 +39,21 @@ def broken(mat, i, j, player, stone_len):
     m, n = mat.shape
     if j + stone_len <= m:
         sideway = mat[i][j:j + stone_len]
-        if np.sum(sideway) == player * (stone_len - 1):
-            return i, j + (mat[i][j:j + stone_len]).tolist().index(0)
-        if np.sum(sideway) == -player * (stone_len - 1):
+        if np.sum(sideway) == abs(player * (stone_len - 1)):
             return i, j + (mat[i][j:j + stone_len]).tolist().index(0)
 
     if i + stone_len <= m:
         vert = mat[:, j][i:i + stone_len]
-        if np.sum(vert) == player * (stone_len - 1):
-            return i + (vert).tolist().index(0), j
-        if np.sum(vert) == -player * (stone_len - 1):
+        if np.sum(vert) == abs(player * (stone_len - 1)):
             return i + (vert).tolist().index(0), j
 
     if j + stone_len <= m and i + stone_len <= n:
         diag = [mat[i + x][j + y] for x in range(stone_len) for y in range(stone_len) if x == y]
-        if np.sum(diag) == player * (stone_len - 1):
-            return i + diag.index(0), j + diag.index(0)
-        if np.sum(diag) == -player * (stone_len - 1):
+        if np.sum(diag) == abs(player * (stone_len - 1)):
             return i + diag.index(0), j + diag.index(0)
 
     if j - stone_len >= 0 and i + stone_len <= n:
         diag = [mat[i + x][j - y] for x in range(stone_len) for y in range(stone_len) if x == y]
-        if np.sum(diag) == player * (stone_len - 1):
-            return i + diag.index(0), j - diag.index(0)
-        if np.sum(diag) == -player * (stone_len - 1):
+        if np.sum(diag) == abs(player * (stone_len - 1)):
             return i + diag.index(0), j - diag.index(0)
     return None
