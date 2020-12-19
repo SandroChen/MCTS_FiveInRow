@@ -3,10 +3,10 @@ import psutil
 import pygame
 
 from fiveinarow import check_for_done, game_result
-from MCTS import Node, update_root, monte_carlo_tree_search
+from MCTSearch import Node, monte_carlo_tree_search
 
 
-def update_by_pc(mat):
+def update_by_pc(mat, step):
     # global mcts_root
 
     """
@@ -18,7 +18,7 @@ def update_by_pc(mat):
         2D matrix representing the updated state of the game.
     """
     root = Node(mat, parent=None, player=1)
-    mat = monte_carlo_tree_search(root).state
+    mat = monte_carlo_tree_search(root, 1, step).state
     return mat
 
 
@@ -50,6 +50,7 @@ def main():
     draw_board(screen, M)
     pygame.display.update()
     done = False
+    pc_step = 0
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -68,7 +69,8 @@ def main():
                 if done:
                     break
                 else:
-                    mat = update_by_pc(mat)
+                    pc_step += 1
+                    mat = update_by_pc(mat, pc_step)
                 done, _ = check_for_done(mat)
                 print('CPU Usage:', psutil.cpu_percent())
 
@@ -80,7 +82,7 @@ def main():
             elif game_result(mat) == -1:
                 text = "Computer player wins!"
             else:
-                text = "No body wins!"
+                text = "Nobody wins!"
             textImage = myfont.render(text, True, (187, 225, 255))
             screen.blit(textImage, (80, int(M*50/2)-20))
             pygame.display.update()
