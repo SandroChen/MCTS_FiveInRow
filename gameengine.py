@@ -11,27 +11,13 @@ import numpy as np
 # place stone according to how imminent the threat is
 def place_intelligently(mat, player):
     m, n = mat.shape
-    for i in range(m):
-        for j in range(n):
-            pos = broken(mat, i, j, player, 5)
-            if pos and mat[pos[0]][pos[1]] == 0:
-                return pos
-    for i in range(m):
-        for j in range(n):
-            pos = broken(mat, i, j, player, 4)
-            if pos and mat[pos[0]][pos[1]] == 0:
-                return pos
-    for i in range(m):
-        for j in range(n):
-            pos = broken(mat, i, j,player, 3)
-            if pos and mat[pos[0]][pos[1]] == 0:
-                return pos
-    for i in range(m):
-        for j in range(n):
-            pos = broken(mat, i, j,player, 2)
-            if pos and mat[pos[0]][pos[1]] == 0:
-                return pos
-    value = np.where(mat==0)
+    for stone_num in range(5, 1, -1):
+        for i in range(m):
+            for j in range(n):
+                pos = broken(mat, i, j, player, stone_num)
+                if pos and mat[pos[0]][pos[1]] == 0:
+                    return pos
+    value = np.where(mat == 0)
     return value[0][0], value[1][0]
 
 
