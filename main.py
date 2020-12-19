@@ -72,7 +72,7 @@ def main():
                     pc_step += 1
                     mat = update_by_pc(mat, pc_step)
                 done, _ = check_for_done(mat)
-                print('CPU Usage:', psutil.cpu_percent())
+                # print('CPU Usage:', psutil.cpu_percent())
 
         if game_result(mat):
             myfont = pygame.font.Font(None, 40)

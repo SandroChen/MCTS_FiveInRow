@@ -8,13 +8,13 @@ from fiveinarow import check_for_done, game_result
 class Node:
     def __init__(self, state, parent, player):
         self.state = state
-        self.parent = parent
-        self.children = {}
+        self.player = player
         # total win times
         self.m = 0
         # n
         self.n = 0
-        self.player = player
+        self.parent = parent
+        self.children = {}
 
 
 def monte_carlo_tree_search(root, end_seconds, step):
@@ -43,10 +43,10 @@ def expand(node, step):
             if len(np.where(mat_tmp == 0)[0]) == 0:
                 break
             mat_child = np.copy(node.state)
-            pos = rollout_policy(mat_tmp, node.player * -1, step)
-            mat_child[pos[0]][pos[1]] = node.player * -1
-            mat_tmp[pos[0]][pos[1]] = 999
-            node.children[str(mat_child)] = Node(mat_child, parent=node, player=node.player * -1)
+            x, y = rollout_policy(mat_tmp, -1 * node.player, step)
+            mat_child[x][y] = -1 * node.player
+            mat_tmp[x][y] = 999
+            node.children[str(mat_child)] = Node(mat_child, parent=node, player=-1 * node.player)
 
 
 # For the traverse function, to avoid using up too much time or resources, you may start considering only
