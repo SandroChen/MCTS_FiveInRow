@@ -70,20 +70,6 @@ def draw_stone(screen, mat):
                 pygame.draw.circle(screen, white_color, pos, 18,0)
 
 
-
-def render(screen, mat):
-    """
-    Draw the updated game with lines and stones using function draw_board and draw_stone
-    input:
-        screen: game window, onto which the stones are drawn
-        mat: 2D matrix representing the game state
-    output:
-        none
-    """
-    draw_board(screen)
-    draw_stone(screen, mat)
-    pygame.display.update()
-
 def check_for_done(mat):
     """
     please write your own code testing if the game is over. Return a boolean variable done. If one of the players wins
@@ -93,7 +79,7 @@ def check_for_done(mat):
     output:
         none
     """
-    result = check_for_win(mat)
+    result = game_result(mat)
     if result:
         return True, result
     else:
@@ -103,33 +89,69 @@ def check_for_done(mat):
             return False, 0
 
 
-def check_for_win(mat):
-    m,n = mat.shape
-    target1 = [1,1,1,1,1]
-    target2 = [-1,-1,-1,-1,-1]
-    for i in range(m):
-        for j in range(n):
-            if j + 5 <= m:
-                sideway = mat[i][j:j+5]
-                if (sideway == target1).all():
-                    return 1
-                if (sideway == target2).all():
-                    return -1
-            if i + 5 <= m:
-                vert =mat[:,j][i:i+5]
-                if (vert == target1).all():
-                    return 1
-                if (vert == target2).all():
-                    return -1
-            if j + 5 <= m and i + 5 <= n:
-                diag = [mat[i+x][j+y] for x in range(5) for y in range(5) if x == y]
-                if diag == target1:
-                    return 1
-                if diag == target2:
-                    return -1
-            if j - 5 >= 0 and i + 5 <= n:
-                diag = [mat[i+x][j-y] for x in range(5) for y in range(5) if x == y]
-                if diag == target1:
-                    return 1
-                if diag == target2:
-                    return -1
+def game_result(board):
+    # check if game is over
+    rowcum = np.cumsum(board, 0)
+    colcum = np.cumsum(board, 1)
+
+    rowsum = rowcum[4:, :] - np.vstack((np.zeros(M), rowcum[:M - 5, :]))
+    colsum = colcum[:, 4:] - np.hstack((np.zeros((M, 1)), colcum[:, :M - 5]))
+    diag_tl = np.array([
+        board[i:i + 5, j:j + 5]
+        for i in range(M - 4)
+        for j in range(M - 4)
+    ])
+    diag_sum_tl = diag_tl.trace(axis1=1, axis2=2)
+    diag_sum_tr = diag_tl[:, ::-1].trace(axis1=1, axis2=2)
+
+    player_one_wins = 5 in rowsum
+    player_one_wins += 5 in colsum
+    player_one_wins += 5 in diag_sum_tl
+    player_one_wins += 5 in diag_sum_tr
+
+    if player_one_wins:
+        return 1
+
+    player_two_wins = -5 in rowsum
+    player_two_wins += -5 in colsum
+    player_two_wins += -5 in diag_sum_tl
+    player_two_wins += -5 in diag_sum_tr
+
+    if player_two_wins:
+        return -1
+
+    if np.all(board != 0):
+        return 0.
+
+    # if not over - no result
+    return None
+
+    # m,n = mat.shape
+    # target1 = [1,1,1,1,1]
+    # target2 = [-1,-1,-1,-1,-1]
+    # for i in range(m):
+    #     for j in range(n):
+    #         if j + 5 <= m:
+    #             sideway = mat[i][j:j+5]
+    #             if (sideway == target1).all():
+    #                 return 1
+    #             if (sideway == target2).all():
+    #                 return -1
+    #         if i + 5 <= m:
+    #             vert =mat[:,j][i:i+5]
+    #             if (vert == target1).all():
+    #                 return 1
+    #             if (vert == target2).all():
+    #                 return -1
+    #         if j + 5 <= m and i + 5 <= n:
+    #             diag = [mat[i+x][j+y] for x in range(5) for y in range(5) if x == y]
+    #             if diag == target1:
+    #                 return 1
+    #             if diag == target2:
+    #                 return -1
+    #         if j - 5 >= 0 and i + 5 <= n:
+    #             diag = [mat[i+x][j-y] for x in range(5) for y in range(5) if x == y]
+    #             if diag == target1:
+    #                 return 1
+    #             if diag == target2:
+    #                 return -1

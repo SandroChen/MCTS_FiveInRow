@@ -10,7 +10,7 @@ import random
 import time
 import numpy as np
 from gameengine import place_intelligently
-from fiveinarow import check_for_done, check_for_win
+from fiveinarow import check_for_done, game_result
 
 exploration_param = np.sqrt(2)
 mcts_root = None
@@ -32,6 +32,7 @@ def move(mat, player):
     mat_tmp[pos[0]][pos[1]] = player
     return mat_tmp
 
+
 def monte_carlo_tree_search(root):
     time_start = time.time()
     counter = 0
@@ -45,15 +46,16 @@ def monte_carlo_tree_search(root):
     pprint_tree(root)
     print(f'This steps run for {counter} time')
     for c in root.children.values():
-        print("score:",c.total_value)
+        print("score:", c.total_value)
         print(c.state)
     return best_child(root)
+
 
 def expand(node):
     if len(node.children.values()) < 5:
         mat_tmp = np.copy(node.state)
-        for i in range(5-len(node.children.values())):
-            if len(np.where(mat_tmp==0)[0]) == 0:
+        for i in range(5 - len(node.children.values())):
+            if len(np.where(mat_tmp == 0)[0]) == 0:
                 break
             mat_child = np.copy(node.state)
             pos = place_intelligently(mat_tmp, node.player * -1)
@@ -62,10 +64,9 @@ def expand(node):
             node.children[str(mat_child)] = Node(mat_child, parent=node, player=node.player * -1)
 
 
-
 # For the traverse function, to avoid using up too much time or resources, you may start considering only
 # a subset of children (e.g 5 children). Increase this number or by choosing this subset smartly later.
-#New implemenataion
+# New implemenataion
 def traverse(node):
     while fully_expanded(node.parent if node.parent else node):
         node = best_uct(node)
@@ -74,15 +75,16 @@ def traverse(node):
     done, result = check_for_done(node.state)
     if done:
         return node
-    if node.parent != None:
-        if pick_unvisited(node.parent.children) != None:
+    if node.parent is not None:
+        if pick_unvisited(node.parent.children) is not None:
             return pick_unvisited(node.parent.children)
         else:
             expand(node)
-            return pick_unvisited(node.children)or node
+            return pick_unvisited(node.children) or node
     else:
-            expand(node)
-            return pick_unvisited(node.children)or node
+        expand(node)
+        return pick_unvisited(node.children) or node
+
 
 def pick_unvisited(nodes):
     unvisited_node = []
@@ -93,6 +95,7 @@ def pick_unvisited(nodes):
         return random.choice(unvisited_node)
     else:
         return None
+
 
 def fully_expanded(node):
     return all([c.visited_number > 0 for c in node.children.values()])
@@ -106,8 +109,10 @@ def visulize_tree(root):
         q = q[1:]
         for c in root.children.values():
             q += [c]
-        print("root type",root.player,"root value",root.visited_number, "num_child",len(root.children.values()))
-        print([{"node type":x.player,"node value":x.total_value, "visited":x.visited_number, "score":uct_score(x)} for x in root.children.values()])
+        print("root type", root.player, "root value", root.visited_number, "num_child", len(root.children.values()))
+        print([{"node type": x.player, "node value": x.total_value, "visited": x.visited_number, "score": uct_score(x)}
+               for x in root.children.values()])
+
 
 def pprint_tree(node, file=None, _prefix="", _last=True):
     print(_prefix, "`- " if _last else "|- ", uct_score(node), sep="", file=file)
@@ -116,6 +121,7 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
     for i, child in enumerate(node.children.values()):
         _last = i == (child_count - 1)
         pprint_tree(child, file, _prefix, _last)
+
 
 def rollout(node):
     done, result = check_for_done(node.state)
@@ -131,7 +137,7 @@ def rollout(node):
         if done:
             return simulation_result
         mat_game = move(mat_game, player_start)
-        player_start = player_start*-1
+        player_start = player_start * -1
 
 
 def backpropagate(node, result):
@@ -139,11 +145,6 @@ def backpropagate(node, result):
         return
     update_stats(node, result)
     backpropagate(node.parent, result)
-
-
-
-
-
 
 
 def is_root(node):
@@ -161,11 +162,11 @@ def update_stats(node, result):
         node.visited_number += 1
 
 
-#def best_child(node):
+# def best_child(node):
 #    return max(node.children.values(), key=lambda x: x.total_value)
 def best_child(node):
     for child in node.children.items():
-        if check_for_win(child[1].state) == -1:
+        if game_result(child[1].state) == -1:
             return child[1]
     return max(node.children.values(), key=lambda x: x.visited_number)
 
@@ -176,7 +177,8 @@ def uct_score(node):
     if node.parent.visited_number == 0:
         return node.total_value / node.visited_number
     else:
-        return node.total_value / node.visited_number + exploration_param * np.sqrt(np.log(node.parent.visited_number)/ node.visited_number)
+        return node.total_value / node.visited_number + exploration_param * np.sqrt(
+            np.log(node.parent.visited_number) / node.visited_number)
 
 
 def best_uct(node):

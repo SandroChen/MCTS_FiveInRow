@@ -1,11 +1,8 @@
 import numpy as np
 import psutil
 import pygame
-import tkinter
-import tkinter.messagebox
 
-from fiveinarow import draw_board, render, check_for_done
-
+from fiveinarow import check_for_done, game_result
 from MCTS import Node, update_root, monte_carlo_tree_search
 
 
@@ -25,63 +22,69 @@ def update_by_pc(mat):
     return mat
 
 
+def draw_board(screen, size):
+    screen.fill((200, 160, 50))
+    for x in range(size):
+        pygame.draw.line(screen, [0, 0, 0], [25 + 50 * x, 25], [25 + 50 * x, size*50-25], 1)
+        pygame.draw.line(screen, [0, 0, 0], [25, 25 + 50 * x], [size*50-25, 25 + 50 * x], 1)
+    pygame.display.update()
+
+
+def update_board(screen, state):
+    indices = np.where(state != 0)
+    for (row, col) in list(zip(indices[0], indices[1])):
+        if state[row][col] == 1:
+            pygame.draw.circle(screen, [0, 0, 0], [25 + 50 * col, 25 + 50 * row], 15, 15)
+        elif state[row][col] == -1:
+            pygame.draw.circle(screen, [255, 255, 255], [25 + 50 * col, 25 + 50 * row], 15, 15)
+    pygame.display.update()
+
+
 def main():
     global M
     M = 8
     pygame.init()
-    screen = pygame.display.set_mode((640, 640))
+    screen = pygame.display.set_mode((50*M, 50*M))
     pygame.display.set_caption('Five-in-a-Row')
-    done = False
     mat = np.zeros((M, M))
-    d = int(560 / (M - 1))
-    draw_board(screen)
+    draw_board(screen, M)
     pygame.display.update()
-
-    result = None
-
-    while not done:
+    done = False
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            render(screen, mat)
+            update_board(screen, mat)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 (x, y) = event.pos
-                row = round((y - 40) / d)
-                col = round((x - 40) / d)
+                col = round((x - 25) / 50)
+                row = round((y - 25) / 50)
                 if mat[row][col] != 0:
                     continue
                 mat[row][col] = 1
-                render(screen, mat)
-                done, result = check_for_done(mat)
+                update_board(screen, mat)
+                done, _ = check_for_done(mat)
                 if done:
                     break
                 else:
                     mat = update_by_pc(mat)
-                done, result = check_for_done(mat)
-                if done:
-                    break
+                done, _ = check_for_done(mat)
                 print('CPU Usage:', psutil.cpu_percent())
 
-    print("winner is:", result)
-    def but():
-        """
-        Output the game result pop-up window
-        """
-        if result == 0:
-            tkinter.messagebox.showinfo('获胜的是', '平局')
-        elif result == 1:
-            tkinter.messagebox.showinfo('获胜的是', '人')
-        elif result == -1:
-            tkinter.messagebox.showinfo('获胜的是', '电脑')
-        else:
-            tkinter.messagebox.showinfo('获胜的是', '未知')
-    root=tkinter.Tk()
-    root.title('查看结果')#标题
-    root.geometry('200x150')#窗体大小
-    root.resizable(False, False)#固定窗体
-    tkinter.Button(root, text='点击该处',command=but).pack()
-    root.mainloop()
+        if game_result(mat):
+            myfont = pygame.font.Font(None, 40)
+            text = ""
+            if game_result(mat) == 1:
+                text = "Human player wins!"
+            elif game_result(mat) == -1:
+                text = "Computer player wins!"
+            else:
+                text = "No body wins!"
+            textImage = myfont.render(text, True, (255, 250, 250))
+            screen.blit(textImage, (50, int(M*50/2)+50))
+            pygame.display.update()
+
 
 if __name__ == '__main__':
     main()
