@@ -23,7 +23,7 @@ def update_by_pc(mat):
 
 
 def draw_board(screen, size):
-    screen.fill((200, 160, 50))
+    screen.fill((230, 185, 70))
     for x in range(size):
         pygame.draw.line(screen, [0, 0, 0], [25 + 50 * x, 25], [25 + 50 * x, size*50-25], 1)
         pygame.draw.line(screen, [0, 0, 0], [25, 25 + 50 * x], [size*50-25, 25 + 50 * x], 1)
@@ -81,8 +81,8 @@ def main():
                 text = "Computer player wins!"
             else:
                 text = "No body wins!"
-            textImage = myfont.render(text, True, (255, 250, 250))
-            screen.blit(textImage, (50, int(M*50/2)+50))
+            textImage = myfont.render(text, True, (187, 225, 255))
+            screen.blit(textImage, (80, int(M*50/2)-20))
             pygame.display.update()
 
 

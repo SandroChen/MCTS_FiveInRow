@@ -125,33 +125,3 @@ def game_result(board):
 
     # if not over - no result
     return None
-
-    # m,n = mat.shape
-    # target1 = [1,1,1,1,1]
-    # target2 = [-1,-1,-1,-1,-1]
-    # for i in range(m):
-    #     for j in range(n):
-    #         if j + 5 <= m:
-    #             sideway = mat[i][j:j+5]
-    #             if (sideway == target1).all():
-    #                 return 1
-    #             if (sideway == target2).all():
-    #                 return -1
-    #         if i + 5 <= m:
-    #             vert =mat[:,j][i:i+5]
-    #             if (vert == target1).all():
-    #                 return 1
-    #             if (vert == target2).all():
-    #                 return -1
-    #         if j + 5 <= m and i + 5 <= n:
-    #             diag = [mat[i+x][j+y] for x in range(5) for y in range(5) if x == y]
-    #             if diag == target1:
-    #                 return 1
-    #             if diag == target2:
-    #                 return -1
-    #         if j - 5 >= 0 and i + 5 <= n:
-    #             diag = [mat[i+x][j-y] for x in range(5) for y in range(5) if x == y]
-    #             if diag == target1:
-    #                 return 1
-    #             if diag == target2:
-    #                 return -1
