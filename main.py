@@ -64,22 +64,7 @@ def main():
 
     print("winner is:", result)
     
-## pop-up result window 
-def but():
-        if result == 0:
-            tkinter.messagebox.showinfo('获胜的是', '平局')
-        elif result == 1:
-            tkinter.messagebox.showinfo('获胜的是', '人')
-        elif result == -1:
-            tkinter.messagebox.showinfo('获胜的是', '电脑')
-        else:
-            tkinter.messagebox.showinfo('获胜的是', '未知')
-root=tkinter.Tk()
-root.title('查看结果')#标题
-root.geometry('200x150')#窗体大小
-root.resizable(False, False)#固定窗体
-tkinter.Button(root, text='点击该处',command=but).pack()
-root.mainloop()
+
  
 if __name__ == '__main__':
     main()
