@@ -32,7 +32,7 @@ def monte_carlo_tree_search(root, end_seconds, step):
     return best_child(root)
 
 
-def expand(node, step):
+def expansion(node, step):
     if len(node.children.values()) < 5:
         mat_tmp = np.copy(node.state)
         for i in range(5 - len(node.children.values())):
@@ -48,8 +48,8 @@ def expand(node, step):
 # For the traverse function, to avoid using up too much time or resources, you may start considering only
 # a subset of children (e.g 5 children). Increase this number or by choosing this subset smartly later.
 # New implemenataion
-def traverse(node, step):
-    while fully_expanded(node.parent if node.parent else node):
+def traverse (node, step):
+    while fully_expansion(node.parent if node.parent else node):
         node = best_uct(node)
         if len(node.children) == 0:
             break
@@ -57,17 +57,17 @@ def traverse(node, step):
     if done:
         return node
     if node.parent is not None:
-        if pick_unvisited(node.parent.children) is not None:
-            return pick_unvisited(node.parent.children)
+        if find_unvisited(node.parent.children) is not None:
+            return find_unvisited(node.parent.children)
         else:
-            expand(node, step)
-            return pick_unvisited(node.children) or node
+            expansion(node, step)
+            return find_unvisited(node.children) or node
     else:
-        expand(node, step)
-        return pick_unvisited(node.children) or node
+        expansion(node, step)
+        return find_unvisited(node.children) or node
 
 
-def pick_unvisited(nodes):
+def find_unvisited(nodes):
     unvisited_node = []
     for node in nodes.values():
         if node.n == 0:
@@ -78,7 +78,7 @@ def pick_unvisited(nodes):
         return None
 
 
-def fully_expanded(node):
+def fully_expansion(node):
     return all([c.n > 0 for c in node.children.values()])
 
 
@@ -108,7 +108,7 @@ def rollout(node, step):
 def backpropagate(node, result):
     if not node:
         return
-    update_states(node, result)
+    status_update(node, result)
     backpropagate(node.parent, result)
 
 
@@ -116,7 +116,7 @@ def is_root(node):
     return True if node.parent is None else False
 
 
-def update_states(node, result):
+def status_update(node, result):
     if result == node.player:
         node.m += 1
         node.n += 1
