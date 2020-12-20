@@ -13,10 +13,10 @@ def rollout_policy(mat, player, step):
     m, n = mat.shape
     M = [3, 4, 5, 6, 2, 7, 1, 0]
     N = [3, 4, 5, 6, 2, 7, 1, 0]
-    if step < 3:
-        start = 3
-    else:
+    if step >= 5:
         start = 5
+    else:
+        start = step + 1
     for stone_num in range(start, 1, -1):
         for i in range(m):
             for j in range(n):
@@ -39,9 +39,9 @@ def broken(mat, i, j, player, stone_len):
     if i + stone_len <= m:
         vertical = mat[:, j][i:i + stone_len]
         if np.sum(vertical) == player * (stone_len - 1):
-            return i + (vertical).tolist().index(0), j
+            return i + list(vertical).index(0), j
         if np.sum(vertical) == -player * (stone_len - 1):
-            return i + (vertical).tolist().index(0), j
+            return i + list(vertical).index(0), j
 
     if j + stone_len <= m and i + stone_len <= n:
         back_diagonal = [mat[i + x][j + y] for x in range(stone_len) for y in range(stone_len) if x == y]
