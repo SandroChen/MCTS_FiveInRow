@@ -11,22 +11,6 @@ import numpy as np
 M = 8
 
 
-def draw_board(screen):
-    """
-    This function draws the board with lines.
-    input: game windows
-    output: none
-    """
-    global M
-    d = int(560 / (M - 1))
-    black_color = [0, 0, 0]
-    board_color = [241, 196, 15]
-    screen.fill(board_color)
-    for h in range(0, M):
-        pygame.draw.line(screen, black_color, [40, h * d + 40], [600, 40 + h * d], 1)
-        pygame.draw.line(screen, black_color, [40 + d * h, 40], [40 + d * h, 600], 1)
-
-
 def check_for_done(mat):
     """
     please write your own code testing if the game is over. Return a boolean variable done. If one of the players wins
