@@ -7,15 +7,13 @@ Created on Wed Dec 18 20:39:35 2019
 """
 import numpy as np
 
-M = 8
-
 
 # place stone according to how imminent the threat is
 def rollout_policy(mat, player, step):
     m, n = mat.shape
     M = [3, 4, 5, 6, 2, 7, 1, 0]
     N = [3, 4, 5, 6, 2, 7, 1, 0]
-    if step <= 3:
+    if step < 3:
         start = 3
     else:
         start = 5

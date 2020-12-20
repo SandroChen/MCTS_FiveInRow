@@ -17,7 +17,7 @@ def update_by_pc(mat, step):
         2D matrix representing the updated state of the game.
     """
     root = Node(mat, parent=None, player=1)
-    mat = monte_carlo_tree_search(root, 1, step).state
+    mat = monte_carlo_tree_search(root, 2, step).state
     return mat
 
 
