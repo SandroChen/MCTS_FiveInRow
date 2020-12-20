@@ -11,16 +11,17 @@ import numpy as np
 # place stone according to how imminent the threat is
 def rollout_policy(mat, player, step):
     m, n = mat.shape
-    M = [3, 4, 5, 6, 2, 7, 1, 0]
-    N = [3, 4, 5, 6, 2, 7, 1, 0]
-    if step >= 5:
-        start = 5
+    M={0:3, 1:4, 2: 5, 3: 6, 4: 2, 5:7, 6:1, 7:0}
+    N={0:3, 1:4, 2: 5, 3: 6, 4: 2, 5:7, 6:1, 7:0}
+    if step < 3:
+        start = 3
     else:
-        start = step + 1
+        start = 5
     for stone_num in range(start, 1, -1):
         for i in range(m):
+            a=M[i]
             for j in range(n):
-                pos = broken(mat, M[i], N[j], player, stone_num)
+                pos = broken(mat, a, N[j], player, stone_num)
                 if pos and mat[pos[0]][pos[1]] == 0:
                     return pos
     value = np.where(mat == 0)
