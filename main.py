@@ -1,5 +1,4 @@
 import numpy as np
-import psutil
 import pygame
 
 from fiveinarow import check_for_done, game_result
@@ -72,9 +71,8 @@ def main():
                     pc_step += 1
                     mat = update_by_pc(mat, pc_step)
                 done, _ = check_for_done(mat)
-                # print('CPU Usage:', psutil.cpu_percent())
 
-        if game_result(mat):
+        if game_result(mat) is not None:
             myfont = pygame.font.Font(None, 40)
             text = ""
             if game_result(mat) == 1:
@@ -83,8 +81,8 @@ def main():
                 text = "Computer player wins!"
             else:
                 text = "Nobody wins!"
-            textImage = myfont.render(text, True, (187, 225, 255))
-            screen.blit(textImage, (80, int(M*50/2)-20))
+            textImage = myfont.render(text, True, (255, 255, 255))
+            screen.blit(textImage, (int(M*50/2)-len(text)*8, int(M*50/2)-20))
             pygame.display.update()
 
 

@@ -28,11 +28,7 @@ def monte_carlo_tree_search(root, end_seconds, step):
         backpropagate(leaf, simulation_result)
         step += 1
         simulation_times += 1
-    # pprint_tree(root)
     print(f'Simulation times: {simulation_times} in {end_seconds} s.')
-    # for c in root.children.values():
-    #     print("score:", c.m)
-    #     print(c.state)
     return best_child(root)
 
 
@@ -86,28 +82,6 @@ def fully_expanded(node):
     return all([c.n > 0 for c in node.children.values()])
 
 
-# def visualize_tree(root):
-#     print("====================================")
-#     q = [root]
-#     while q:
-#         root = q[0]
-#         q = q[1:]
-#         for c in root.children.values():
-#             q += [c]
-#         print("root type", root.player, "root value", root.n, "num_child", len(root.children.values()))
-#         print([{"node type": x.player, "node value": x.m, "visited": x.n, "score": uct_score(x)}
-#                for x in root.children.values()])
-#
-#
-# def pprint_tree(node, file=None, _prefix="", _last=True):
-#     print(_prefix, "`- " if _last else "|- ", uct_score(node, np.sqrt(2)), sep="", file=file)
-#     _prefix += "   " if _last else "|  "
-#     child_count = len(node.children.values())
-#     for i, child in enumerate(node.children.values()):
-#         _last = i == (child_count - 1)
-#         pprint_tree(child, file, _prefix, _last)
-
-
 def move(mat, player, step):
     mat_tmp = np.copy(mat)
     x, y = rollout_policy(mat_tmp, player, step)
@@ -153,8 +127,6 @@ def update_states(node, result):
         node.n += 1
 
 
-# def best_child(node):
-#    return max(node.children.values(), key=lambda x: x.m)
 def best_child(node):
     for child in node.children.items():
         if game_result(child[1].state) == -1:
