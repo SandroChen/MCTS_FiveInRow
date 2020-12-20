@@ -30,30 +30,30 @@ def rollout_policy(mat, player, step):
 def broken(mat, i, j, player, stone_len):
     m, n = mat.shape
     if j + stone_len <= m:
-        sideway = mat[i][j:j + stone_len]
-        if np.sum(sideway) == player * (stone_len - 1):
+        side = mat[i][j:j + stone_len]
+        if np.sum(side) == player * (stone_len - 1):
             return i, j + (mat[i][j:j + stone_len]).tolist().index(0)
-        if np.sum(sideway) == -player * (stone_len - 1):
+        if np.sum(side) == -player * (stone_len - 1):
             return i, j + (mat[i][j:j + stone_len]).tolist().index(0)
 
     if i + stone_len <= m:
-        vert = mat[:, j][i:i + stone_len]
-        if np.sum(vert) == player * (stone_len - 1):
-            return i + (vert).tolist().index(0), j
-        if np.sum(vert) == -player * (stone_len - 1):
-            return i + (vert).tolist().index(0), j
+        vertical = mat[:, j][i:i + stone_len]
+        if np.sum(vertical) == player * (stone_len - 1):
+            return i + (vertical).tolist().index(0), j
+        if np.sum(vertical) == -player * (stone_len - 1):
+            return i + (vertical).tolist().index(0), j
 
     if j + stone_len <= m and i + stone_len <= n:
-        diag = [mat[i + x][j + y] for x in range(stone_len) for y in range(stone_len) if x == y]
-        if np.sum(diag) == player * (stone_len - 1):
-            return i + diag.index(0), j + diag.index(0)
-        if np.sum(diag) == -player * (stone_len - 1):
-            return i + diag.index(0), j + diag.index(0)
+        back_diagonal = [mat[i + x][j + y] for x in range(stone_len) for y in range(stone_len) if x == y]
+        if np.sum(back_diagonal) == player * (stone_len - 1):
+            return i + back_diagonal.index(0), j + back_diagonal.index(0)
+        if np.sum(back_diagonal) == -player * (stone_len - 1):
+            return i + back_diagonal.index(0), j + back_diagonal.index(0)
 
     if j - stone_len >= 0 and i + stone_len <= n:
-        back_diag = [mat[i + x][j - y] for x in range(stone_len) for y in range(stone_len) if x == y]
-        if np.sum(back_diag) == player * (stone_len - 1):
-            return i + back_diag.index(0), j - back_diag.index(0)
-        if np.sum(back_diag) == -player * (stone_len - 1):
-            return i + back_diag.index(0), j - back_diag.index(0)
+        diagonal = [mat[i + x][j - y] for x in range(stone_len) for y in range(stone_len) if x == y]
+        if np.sum(diagonal) == player * (stone_len - 1):
+            return i + diagonal.index(0), j - diagonal.index(0)
+        if np.sum(diagonal) == -player * (stone_len - 1):
+            return i + diagonal.index(0), j - diagonal.index(0)
     return None
