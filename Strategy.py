@@ -6,8 +6,8 @@ Created on Wed Dec 18 20:39:35 2019
 @author: root
 """
 import numpy as np
-M={0:3, 1:4, 2: 5, 3: 6, 4: 2, 5:7, 6:1, 7:0}
-N={0:3, 1:4, 2: 5, 3: 6, 4: 2, 5:7, 6:1, 7:0}
+M=[3,4,5,6,2,7,1,0]
+N=[3,4,5,6,2,7,1,0]
 
 # place stone according to how imminent the threat is
 def rollout_policy(mat, player, step):
